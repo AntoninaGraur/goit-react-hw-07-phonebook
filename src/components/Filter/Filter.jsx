@@ -1,13 +1,10 @@
-import React from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { getFilter } from '../store/selectors';
+
 import { setFilter } from '../store/ContactListSlice';
 import { FilterInput } from './Filter.styled';
-// import { FilterInput } from './Filter.styled';
 
 export function Filter() {
-  const filter = useSelector(getFilter);
+  const filter = useSelector(state => state.contacts.filter);
   const dispatch = useDispatch();
 
   const onChangeInput = ({ target: { value } }) => {
@@ -24,9 +21,6 @@ export function Filter() {
       />
     </div>
   );
-};
-  
-
-
+}
 
 

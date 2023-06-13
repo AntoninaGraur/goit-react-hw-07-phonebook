@@ -1,25 +1,42 @@
+import { addContactsThunk, deleteContactsThunk } from '../store/thunk';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { ContactMenu, DeleteBtn, ContactsLi } from './ContactList.styled';
+import { useEffect } from 'react';
+// import Notiflix from 'notiflix';
 
-import { deleteContact } from 'components/store/ContactListSlice';
-import { useDispatch, useSelector } from 'react-redux'
-import { getFilteredContactsList } from 'components/store/selectors';
-import { ContactMenu, DeleteBtn } from './ContactList.styled';
-
-export function ContactList() { 
-
-  const filteredContactsList = useSelector(getFilteredContactsList);
+export function ContactList() {
+  const { items } = useSelector(state => state.contacts.contacts);
   const dispatch = useDispatch();
+  const filter = useSelector(state => state.contacts.filter);
 
-  const onContactDelete = (id) => {
-    dispatch(deleteContact(id));
+  useEffect(() => {
+    dispatch(addContactsThunk());
+  }, [dispatch]);
+
+  const onDeletecontact = id => {
+    dispatch(deleteContactsThunk(id));
   };
+  const filteredContact = items?.filter(contact =>
+    contact?.name?.toLowerCase().includes(filter.toLowerCase())
+  );
+  
+   
+  
+
   return (
-    <ContactMenu>{filteredContactsList.map(contact => (
-      <li key={contact.id}>
-        <p> {contact.name}:  {contact.number}</p>
-        <DeleteBtn onClick={() => onContactDelete(contact.id)}>
-          Delete</DeleteBtn>
-      </li>
-    ))}
-    </ContactMenu>);
-};
+    <ContactMenu>
+      {filteredContact.map(({ id, createdAt, name, phone }) => (
+        <ContactsLi key={createdAt}>
+          <p>
+            {' '}
+            {name}:  {phone}
+          </p>
+          <DeleteBtn type="button" onClick={() => onDeletecontact(id)}>
+            Delete
+          </DeleteBtn>
+        </ContactsLi>
+      ))}
+    </ContactMenu>
+  );
+}
